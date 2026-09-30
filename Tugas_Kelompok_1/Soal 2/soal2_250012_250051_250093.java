@@ -1,5 +1,5 @@
 /*
-Nama Program : Program Koordinat kartesian OOP
+Nama Program : Program Selisih Waktu OOP
 Anggota      : - Amela Dzakiah Majid (140810250051)
                - Atika Shafira (140810250093)
                - Syifa Dwi Amirah (140810250012)
