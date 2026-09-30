@@ -292,7 +292,7 @@ public class Soal3_250012_250051_250093 {
                     tampilkanHeader();
                     data1.cetakPegawai(waktu1, nomor++);
                     tampilkanGaris();
-
+                    
                     break;
 
                 case 2:
