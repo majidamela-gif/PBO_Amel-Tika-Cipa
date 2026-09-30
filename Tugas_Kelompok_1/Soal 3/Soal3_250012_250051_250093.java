@@ -22,3 +22,4 @@ Deskripsi    : Buatlah program OOP untuk mencari gaji harian da lembur berdasark
                 Utama : pakai menu d minimal 3 object
 */
 
+
