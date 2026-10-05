@@ -387,7 +387,7 @@ class Menu {
 public class Soal3_250012_250051_250093 {
     static Scanner input = new Scanner(System.in);
     public static void main(String[] args) {
-        Menu menu = new Menu();
+        Menu menu = new Menu(input);
 
         do {
             menu.tampilkanMenu();
