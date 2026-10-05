@@ -73,7 +73,7 @@ class Koordinat {
 }
 
 
-public class Koordinat {
+public class soal2_250051_250093_250012 {
     static Scanner input = new Scanner(System.in);
     public static void menu() {
         Koordinat titikA = new Koordinat(2, 1);
