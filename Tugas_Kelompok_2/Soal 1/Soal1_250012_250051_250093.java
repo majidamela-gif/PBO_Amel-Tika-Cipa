@@ -3,7 +3,7 @@ Nama Program : Program Koordinat kartesian OOP
 Anggota      : - Amela Dzakiah Majid (140810250051)
                - Atika Shafira (140810250093)
                - Syifa Dwi Amirah (140810250012)
-Tanggal Buat : 28 September 2026
+Tanggal Buat : 06 Oktober 2026
 Deskripsi    : Buat program OOP koordinat kartesian
                 ◼ Atribut : absis dan ordinat
                 ◼ Constructor, input (dalam & luar), output (dalam & luar)
@@ -12,6 +12,7 @@ Deskripsi    : Buat program OOP koordinat kartesian
                 ◼ nilai pencerminan terhadap sumbu X
                 ◼ nilai pencerminan terhadap sumbu Y
                 ◼ Jarak antara 2 titik
+                Class Menu dipisah
 */
 
 import java.util.Scanner;
@@ -34,28 +35,33 @@ class Koordinat {
         return absis;
     }
 
-    public void setAbsis(float absis){
-        this.absis = absis;
-    }
-
     public float getOrdinat(){
         return ordinat;
+    }
+
+    public void setAbsis(float absis){
+        this.absis = absis;
     }
 
     public void setOrdinat(float ordinat){
         this.ordinat = ordinat;
     }
 
+    public void setKoordinat(float pAbsis, float pOrdinat){
+        absis = pAbsis;
+        ordinat = pOrdinat;
+    }
+
     public void inputKoordinat(Scanner input){
         System.out.print("Masukkan absis: ");
         absis = input.nextFloat();
+
         System.out.print("Masukkan ordinat: ");
         ordinat = input.nextFloat();
     }
 
-    public void setKoordinat(float pAbsis, float pOrdinat){
-        absis = pAbsis;
-        ordinat = pOrdinat;
+    public void cetakTitik(){
+        System.out.println("(" + absis + ", " + ordinat + ")");
     }
 
     public void titikTengahVoid(Koordinat p1, Koordinat p2){
@@ -108,130 +114,179 @@ class Koordinat {
     public double jarakReturn(Koordinat p1, Koordinat p2){
         return Math.sqrt(Math.pow(p2.absis - p1.absis, 2) + Math.pow(p2.ordinat - p1.ordinat, 2));
     }
+}
 
-    public void cetakTitik(){
-        System.out.println("(" + absis + ", " + ordinat + ")");
+
+class Menu {
+    private Scanner input;
+    private int pilihan;
+
+    public Menu(Scanner input){
+        this.input = input;
     }
 
-    public void cetak(Koordinat p1, Koordinat p2){
-        System.out.println("=== DATA TITIK ===");
-        System.out.print("Titik A = ");
-        p1.cetakTitik();
-        System.out.print("Titik B = ");
-        p2.cetakTitik();
+    public void inputKoordinatLuar(Koordinat titik){
+        float absis;
+        float ordinat;
 
-        Koordinat hasilVoid = new Koordinat();
-        hasilVoid.titikTengahVoid(p1, p2);
-        Koordinat hasilReturn = p1.titikTengahReturn(p2);
+        System.out.print("Masukkan absis: ");
+        absis = input.nextFloat();
+
+        System.out.print("Masukkan ordinat: ");
+        ordinat = input.nextFloat();
+
+        titik.setKoordinat(absis, ordinat);
+    }
+
+    public void cetakLuar(Koordinat titik, String label) {
+        System.out.print(label + " = ");
+        titik.cetakTitik();
+    }
+
+    public void cetakSemua(Koordinat titikA, Koordinat titikB){
+        System.out.println("\n==================================");
+        System.out.println("              HASIL KOORDINAT");
+        System.out.println("==================================");
+
+        System.out.println("\n=== DATA TITIK ===");
+        cetakLuar(titikA, "Titik A");
+        cetakLuar(titikB, "Titik B");
+
+        Koordinat titikTengahReturn = titikA.titikTengahReturn(titikB);
+        Koordinat titikTengahVoid = new Koordinat();
+        titikTengahVoid.titikTengahVoid(titikA, titikB);
         System.out.println("\n=== TITIK TENGAH ===");
-        System.out.print("Void   : ");
-        hasilVoid.cetakTitik();
-        System.out.print("Return : ");
-        hasilReturn.cetakTitik();
+        cetakLuar(titikTengahReturn, "Return");
+        cetakLuar( titikTengahVoid, "Void");
 
+        Koordinat cerminXP1Return = titikA.cerminSumbuXReturn(titikA);
         Koordinat cerminXP1Void = new Koordinat();
-        cerminXP1Void.cerminSumbuXVoid(p1);
-        Koordinat cerminXP1Return = p1.cerminSumbuXReturn(p1);
-        System.out.println("\n=== CERMIN A TERHADAP SUMBU X ===");
-        System.out.print("Void   : ");
-        cerminXP1Void.cetakTitik();
-        System.out.print("Return : ");
-        cerminXP1Return.cetakTitik();
+        cerminXP1Void.cerminSumbuXVoid(titikA);
+        System.out.println("\n=== CERMIN TITIK A TERHADAP SUMBU X ===");
+        cetakLuar(cerminXP1Return, "Return");
+        cetakLuar(cerminXP1Void, "Void");
 
+        Koordinat cerminXP2Return = titikB.cerminSumbuXReturn(titikB);
         Koordinat cerminXP2Void = new Koordinat();
-        cerminXP2Void.cerminSumbuXVoid(p2);
-        Koordinat cerminXP2Return = p2.cerminSumbuXReturn(p2);
-        System.out.println("\n=== CERMIN B TERHADAP SUMBU X ===");
-        System.out.print("Void   : ");
-        cerminXP2Void.cetakTitik();
-        System.out.print("Return : ");
-        cerminXP2Return.cetakTitik();
+        cerminXP2Void.cerminSumbuXVoid(titikB);
+        System.out.println("\n=== CERMIN TITIK B TERHADAP SUMBU X ===");
+        cetakLuar(cerminXP2Return, "Return");
+        cetakLuar(cerminXP2Void, "Void");
 
+        Koordinat cerminYP1Return = titikA.cerminSumbuYReturn(titikA);
         Koordinat cerminYP1Void = new Koordinat();
-        cerminYP1Void.cerminSumbuYVoid(p1);
-        Koordinat cerminYP1Return = p1.cerminSumbuYReturn(p1);
-        System.out.println("\n=== CERMIN A TERHADAP SUMBU Y ===");
-        System.out.print("Void   : ");
-        cerminYP1Void.cetakTitik();
-        System.out.print("Return : ");
-        cerminYP1Return.cetakTitik();
+        cerminYP1Void.cerminSumbuYVoid(titikA);
+        System.out.println("\n=== CERMIN TITIK A TERHADAP SUMBU Y ===");
+        cetakLuar(cerminYP1Return, "Return");
+        cetakLuar(cerminYP1Void, "Void");
 
+        Koordinat cerminYP2Return = titikB.cerminSumbuYReturn(titikB);
         Koordinat cerminYP2Void = new Koordinat();
-        cerminYP2Void.cerminSumbuYVoid(p2);
-        Koordinat cerminYP2Return = p2.cerminSumbuYReturn(p2);
-        System.out.println("\n=== CERMIN B TERHADAP SUMBU Y ===");
-        System.out.print("Void   : ");
-        cerminYP2Void.cetakTitik();
-        System.out.print("Return : ");
-        cerminYP2Return.cetakTitik();
+        cerminYP2Void.cerminSumbuYVoid(titikB);
+        System.out.println("\n=== CERMIN TITIK B TERHADAP SUMBU Y ===");
+        cetakLuar(cerminYP2Return, "Return");
+        cetakLuar(cerminYP2Void, "Void");
 
-        System.out.println("\n=== JARAK ===");
-        System.out.print("Void   : ");
-        p1.jarakVoid(p1, p2);
-        double jarakReturn = p1.jarakReturn(p1, p2);
+        System.out.println("\n=== JARAK ANTARA TITIK A DAN B ===");
+        double jarakReturn = titikA.jarakReturn(titikA, titikB);
         System.out.println("Return : " + jarakReturn);
+        System.out.print("Void   : ");
+        titikA.jarakVoid(titikA, titikB);
+    }
+
+    public void tampilkanMenu(){
+        System.out.println("\n==============================");
+        System.out.println("       MENU KOORDINAT");
+        System.out.println("==============================");
+        System.out.println("1. Constructor Berparameter");
+        System.out.println("2. Setter");
+        System.out.println("3. Input Dalam");
+        System.out.println("4. Input Luar");
+        System.out.println("5. Keluar");
+        System.out.print("Pilih menu : ");
+
+        pilihan = input.nextInt();
+    }
+
+    public void prosesMenu(){
+        switch (pilihan) {
+            case 1:
+                constructor();
+                break;
+
+            case 2:
+                setter();
+                break;
+
+            case 3:
+                inputDalam();
+                break;
+
+            case 4:
+                inputLuar();
+                break;
+
+            case 5:
+                System.out.println("\nProgram selesai.");
+                break;
+
+            default:
+                System.out.println("\nPilihan tidak tersedia!");
+        }
+    }
+
+    public int getPilihan() {
+        return pilihan;
+    }
+
+    public void constructor() {
+        System.out.println("\n=== CONSTRUCTOR BERPAMETER ===");
+        Koordinat titikA = new Koordinat(1, 2);
+        Koordinat titikB = new Koordinat(5, 4);
+        cetakSemua(titikA, titikB);
+    }
+
+    public void setter() {
+        System.out.println("\n=== SETTER ===");
+        Koordinat titikA = new Koordinat();
+        Koordinat titikB = new Koordinat();
+        titikA.setAbsis(5);
+        titikA.setOrdinat(1);
+        titikB.setKoordinat(9, 3);
+        cetakSemua(titikA, titikB);
+    }
+
+    public void inputDalam() {
+        System.out.println("\n=== INPUT KOORDINAT DALAM ===");
+        Koordinat titikA = new Koordinat();
+        Koordinat titikB = new Koordinat();
+        System.out.println("\nInput untuk Titik A:");
+        titikA.inputKoordinat(input);
+        System.out.println("\nInput untuk Titik B:");
+        titikB.inputKoordinat(input);
+        cetakSemua(titikA, titikB);
+    }
+
+    public void inputLuar() {
+        System.out.println("\n=== INPUT KOORDINAT LUAR ===");
+        Koordinat titikA = new Koordinat();
+        Koordinat titikB = new Koordinat();
+        System.out.println("\nInput untuk Titik A:");
+        inputKoordinatLuar(titikA);
+        System.out.println("\nInput untuk Titik B:");
+        inputKoordinatLuar(titikB);
+        cetakSemua(titikA, titikB);
     }
 }
 
 public class Soal1_250012_250051_250093{
     static Scanner input = new Scanner(System.in);
     public static void main(String args[]){
-        int pilihan;
-        Koordinat titikA = new Koordinat();
-        Koordinat titikB = new Koordinat();
-        Koordinat titikT = new Koordinat();
+        Menu menu = new Menu(input);
 
         do {
-            pilihan = menu();
-
-            switch (pilihan) {
-                case 1:
-                    System.out.println("\n=== CONSTRUCTOR BERPAMETER ===");
-                    titikA = new Koordinat(1, 2);
-                    titikB = new Koordinat(5, 4);
-                    titikT.cetak(titikA, titikB);
-
-                    break;
-
-                case 2:
-                    System.out.println("\n=== SETTER ===");
-                    titikA.setKoordinat(5, 1);
-                    titikB.setKoordinat(9, 3);
-                    titikT.cetak(titikA, titikB);
-
-                    break;
-
-                case 3:
-                    System.out.println("\n=== INPUT KOORDINAT ===");
-                    System.out.println("\nMasukkan data Titik A");
-                    titikA.inputKoordinat(input);
-                    System.out.println("\nMasukkan data Titik B");
-                    titikB.inputKoordinat(input);
-                    titikT.cetak(titikA, titikB);
-
-                    break;
-
-                case 4:
-                    System.out.println("\nProgram selesai.");
-                    break;
-
-                default:
-                    System.out.println("\nPilihan tidak tersedia!");
-            }
-        } while (pilihan != 4);
-        input.close();
-    }
-
-    static int menu() {
-        System.out.println("\n==============================");
-        System.out.println("       MENU KOORDINAT");
-        System.out.println("==============================");
-        System.out.println("1. Constructor Berparameter");
-        System.out.println("2. Setter");
-        System.out.println("3. Input Koordinat");
-        System.out.println("4. Keluar");
-        System.out.print("Pilih menu : ");
-
-        return input.nextInt();
+            menu.tampilkanMenu();
+            menu.prosesMenu();
+        } while (menu.getPilihan() != 5);
     }
 }
