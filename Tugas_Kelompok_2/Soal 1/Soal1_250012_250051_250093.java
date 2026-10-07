@@ -279,6 +279,7 @@ class Menu {
     }
 }
 
+
 public class Soal1_250012_250051_250093{
     static Scanner input = new Scanner(System.in);
     public static void main(String args[]){
