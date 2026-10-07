@@ -289,5 +289,7 @@ public class Soal1_250012_250051_250093{
             menu.tampilkanMenu();
             menu.prosesMenu();
         } while (menu.getPilihan() != 5);
+
+        input.close();
     }
 }

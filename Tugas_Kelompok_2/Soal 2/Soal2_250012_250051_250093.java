@@ -25,9 +25,7 @@ class Waktu{
     }
 
     public Waktu(int jam, int menit, int detik){
-        this.jam = jam;
-        this.menit = menit;
-        this.detik = detik;
+        setWaktu(jam, menit, detik);
     }
 
     public int getJam(){
@@ -43,30 +41,71 @@ class Waktu{
     }
 
     public void setJam(int jam){
-        this.jam = jam;
+        if (jam >= 0 && jam < 24){
+            this.jam = jam;
+        } else {
+            this.jam = 0;
+            System.out.println("Jam harus 0-23!");
+        }
     }
 
     public void setMenit(int menit){
-        this.menit = menit;
+        if (menit >= 0 && menit < 60){
+            this.menit = menit;
+        } else {
+            this.menit = 0;
+            System.out.println("Menit harus 0-59!");
+        }
     }
 
     public void setDetik(int detik){
-        this.detik = detik;
+        if (detik >= 0 && detik < 60){
+            this.detik = detik;
+        } else {
+            this.detik = 0;
+            System.out.println("Detik harus 0-59!");
+        }
     }
 
     public void setWaktu(int jam, int menit, int detik){
-        this.jam = jam;
-        this.menit = menit;
-        this.detik = detik;
+        setJam(jam);
+        setMenit(menit);
+        setDetik(detik);
     }
 
     public void inputWaktu(Scanner input){
-        System.out.print("Masukkan Jam: ");
-        jam = input.nextInt();
-        System.out.print("Masukkan Menit: ");
-        menit = input.nextInt();
-        System.out.print("Masukkan Detik: ");
-        detik = input.nextInt();
+        int jam;
+        int menit;
+        int detik;
+
+        do {
+            System.out.print("Masukkan Jam (0-23): ");
+            jam = input.nextInt();
+
+            if (jam < 0 || jam >= 24){
+                System.out.println("Jam harus 0-23!");
+            }
+        } while (jam < 0 || jam >= 24);
+
+        do {
+            System.out.print("Masukkan Menit (0-59): ");
+            menit = input.nextInt();
+
+            if (menit < 0 || menit >= 60){
+                System.out.println("Menit harus 0-59!");
+            }
+        } while (menit < 0 || menit >= 60);
+
+        do {
+            System.out.print("Masukkan Detik (0-59): ");
+            detik = input.nextInt();
+
+            if (detik < 0 || detik >= 60) {
+                System.out.println("Detik harus 0-59!");
+            }
+        } while (detik < 0 || detik >= 60);
+
+        setWaktu(jam, menit, detik);
     }
 
     public int konvertDetik(){
@@ -116,12 +155,32 @@ class Menu {
         int menit;
         int detik;
 
-        System.out.print("Masukkan Jam: ");
-        jam = input.nextInt();
-        System.out.print("Masukkan Menit: ");
-        menit = input.nextInt();
-        System.out.print("Masukkan Detik: ");
-        detik = input.nextInt();
+        do {
+            System.out.print("Masukkan Jam (0-23): ");
+            jam = input.nextInt();
+
+            if (jam < 0 || jam >= 24){
+                System.out.println("Jam harus 0-23!");
+            }
+        } while (jam < 0 || jam >= 24);
+
+        do {
+            System.out.print("Masukkan Menit (0-59): ");
+            menit = input.nextInt();
+
+            if (menit < 0 || menit >= 60){
+                System.out.println("Menit harus 0-59!");
+            }
+        } while (menit < 0 || menit >= 60);
+
+        do {
+            System.out.print("Masukkan Detik (0-59): ");
+            detik = input.nextInt();
+
+            if (detik < 0 || detik >= 60){
+                System.out.println("Detik harus 0-59!");
+            }
+        } while (detik < 0 || detik >= 60);
 
         waktu.setWaktu(jam, menit, detik);
     }
@@ -205,18 +264,18 @@ class Menu {
     }
 
     public void inputDalam() {
-        System.out.println("\n=== INPUT KOORDINAT DALAM ===");
+        System.out.println("\n=== INPUT WAKTU DALAM ===");
         Waktu waktuA = new Waktu();
         Waktu waktuB = new Waktu();
         System.out.println("\nInput untuk Waktu A:");
         waktuA.inputWaktu(input);
         System.out.println("\nInput untuk Waktu B:");
-        waktuA.inputWaktu(input);
+        waktuB.inputWaktu(input);
         cetakSemua(waktuA, waktuB);
     }
 
     public void inputLuar() {
-        System.out.println("\n=== INPUT KOORDINAT LUAR ===");
+        System.out.println("\n=== INPUT WAKTU LUAR ===");
         Waktu waktuA = new Waktu();
         Waktu waktuB = new Waktu();
         System.out.println("\nInput untuk Waktu A:");
@@ -236,5 +295,7 @@ public class Soal2_250012_250051_250093{
             menu.tampilkanMenu();
             menu.prosesMenu();
         } while (menu.getPilihan() != 5);
+
+        input.close();
     }
 }
