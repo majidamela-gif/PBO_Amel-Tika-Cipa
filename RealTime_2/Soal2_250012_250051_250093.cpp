@@ -57,8 +57,7 @@ public:
     void inputMatriks() {
         for (int i = 0; i < baris; i++) {
             for (int j = 0; j < kolom; j++) {
-                cout << "Nilai [" << i + 1 << "]["
-                     << j + 1 << "] = ";
+                cout << "Nilai [" << i + 1 << "][" << j + 1 << "] = ";
                 cin >> nilai[i][j];
             }
         }
@@ -90,8 +89,7 @@ public:
 
         for (int i = 0; i < A.baris; i++) {
             for (int j = 0; j < A.kolom; j++) {
-                hasil.nilai[i][j] =
-                    A.nilai[i][j] + B.nilai[i][j];
+                hasil.nilai[i][j] = A.nilai[i][j] + B.nilai[i][j];
             }
         }
         return hasil;
@@ -360,7 +358,7 @@ public:
 
 int main() {
     Menu menu;
-
+    
     do {
         menu.tampilkanMenu();
         menu.prosesMenu();
