@@ -78,8 +78,7 @@ public:
 
         for (int i = 0; i < baris; i++) {
             for (int j = 0; j < kolom; j++) {
-                nilai[i][j] =
-                    A.nilai[i][j] + B.nilai[i][j];
+                nilai[i][j] = A.nilai[i][j] + B.nilai[i][j];
             }
         }
     }
@@ -275,12 +274,14 @@ public:
         cout << "\nMatriks A" << endl;
         A.setNilai(0, 0, 1);
         A.setNilai(0, 1, 2);
+
         A.setNilai(1, 0, 3);
         A.setNilai(1, 1, 4);
 
         cout << "\nMatriks B" << endl;
         B.setNilai(0, 0, 5);
         B.setNilai(0, 1, 6);
+        
         B.setNilai(1, 0, 7);
         B.setNilai(1, 1, 8);
 
@@ -358,7 +359,7 @@ public:
 
 int main() {
     Menu menu;
-    
+
     do {
         menu.tampilkanMenu();
         menu.prosesMenu();
