@@ -232,7 +232,7 @@ public:
             }
         } while (gol < 1 || gol > 4);
 
-        cin.ignore(1000, '\n');
+        cin.ignore();
     }
 
     int hitungGajiHarian() {
@@ -437,7 +437,7 @@ public:
         data.setNama(nama);
         data.setGol(gol);
 
-        cin.ignore(1000, '\n');
+        cin.ignore();
     }
 
     void inputWaktuLuar(Waktu &waktu, string keterangan) {
@@ -477,7 +477,7 @@ public:
 
         waktu.setWaktu(jam, menit, detik);
 
-        cin.ignore(1000, '\n');
+        cin.ignore();
     }
 
     void tampilkanMenu() {
@@ -492,7 +492,7 @@ public:
         cout << "Pilih menu: ";
 
         cin >> pilihan;
-        cin.ignore(1000, '\n');
+        cin.ignore();
     }
 
     void prosesMenu() {
