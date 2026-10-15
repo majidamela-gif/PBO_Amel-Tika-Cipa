@@ -94,7 +94,6 @@ class Matriks {
     public void kaliMatriksVoid(Matriks A, Matriks B) {
         baris = A.baris;
         kolom = B.kolom;
-
         for (int i = 0; i < baris; i++) {
             for (int j = 0; j < kolom; j++) {
                 nilai[i][j] = 0;
