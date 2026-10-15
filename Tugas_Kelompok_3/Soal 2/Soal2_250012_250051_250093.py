@@ -10,70 +10,70 @@ Deskripsi    : Program OOP untuk mencari penjumlahan dan perkalian 2 buah matrik
 
 class Matriks:
     def __init__(self, baris=0, kolom=0):
-        self.baris = baris
-        self.kolom = kolom
-        self.nilai = [[0 for _ in range(10)] for _ in range(10)]
+        self.__baris = baris
+        self.__kolom = kolom
+        self.__nilai = [[0 for _ in range(10)] for _ in range(10)]
 
         for i in range(baris):
             for j in range(kolom):
-                self.nilai[i][j] = 0
+                self.__nilai[i][j] = 0
 
     def getBaris(self):
-        return self.baris
+        return self.__baris
 
     def setBaris(self, baris):
-        self.baris = baris
+        self.__baris = baris
 
     def getKolom(self):
-        return self.kolom
+        return self.__kolom
 
     def setKolom(self, kolom):
-        self.kolom = kolom
+        self.__kolom = kolom
 
     def setNilai(self, i, j, nilai):
-        self.nilai[i][j] = nilai
+        self.__nilai[i][j] = nilai
 
     def inputMatriks(self):
-        for i in range(self.baris):
-            for j in range(self.kolom):
-                self.nilai[i][j] = int(input(f"Nilai [{i + 1}][{j + 1}] = "))
+        for i in range(self.__baris):
+            for j in range(self.__kolom):
+                self.__nilai[i][j] = int(input(f"Nilai [{i + 1}][{j + 1}] = "))
 
     def cetakMatriks(self):
-        for i in range(self.baris):
-            for j in range(self.kolom):
-                print(self.nilai[i][j], end="\t")
+        for i in range(self.__baris):
+            for j in range(self.__kolom):
+                print(self.__nilai[i][j], end="\t")
             print()
 
     def addMatriksVoid(self, A, B):
-        self.baris = A.baris
-        self.kolom = A.kolom
-        for i in range(self.baris):
-            for j in range(self.kolom):
-                self.nilai[i][j] = A.nilai[i][j] + B.nilai[i][j]
+        self.__baris = A.__baris
+        self.__kolom = A.__kolom
+        for i in range(self.__baris):
+            for j in range(self.__kolom):
+                self.__nilai[i][j] = A.__nilai[i][j] + B.__nilai[i][j]
 
     def addMatriksReturn(self, A, B):
-        hasil = Matriks(A.baris, A.kolom)
-        for i in range(A.baris):
-            for j in range(A.kolom):
-                hasil.nilai[i][j] = A.nilai[i][j] + B.nilai[i][j]
+        hasil = Matriks(A.__baris, A.__kolom)
+        for i in range(A.__baris):
+            for j in range(A.__kolom):
+                hasil.__nilai[i][j] = A.__nilai[i][j] + B.__nilai[i][j]
         return hasil
 
     def kaliMatriksVoid(self, A, B):
-        self.baris = A.baris
-        self.kolom = B.kolom
-        for i in range(self.baris):
-            for j in range(self.kolom):
-                self.nilai[i][j] = 0
-                for k in range(A.kolom):
-                    self.nilai[i][j] += A.nilai[i][k] * B.nilai[k][j]
+        self.__baris = A.__baris
+        self.__kolom = B.__kolom
+        for i in range(self.__baris):
+            for j in range(self.__kolom):
+                self.__nilai[i][j] = 0
+                for k in range(A.__kolom):
+                    self.__nilai[i][j] += A.__nilai[i][k] * B.__nilai[k][j]
 
     def kaliMatriksReturn(self, A, B):
-        hasil = Matriks(A.baris, B.kolom)
-        for i in range(A.baris):
-            for j in range(B.kolom):
-                hasil.nilai[i][j] = 0
-                for k in range(A.kolom):
-                    hasil.nilai[i][j] += A.nilai[i][k] * B.nilai[k][j]
+        hasil = Matriks(A.__baris, B.__kolom)
+        for i in range(A.__baris):
+            for j in range(B.__kolom):
+                hasil.__nilai[i][j] = 0
+                for k in range(A.__kolom):
+                    hasil.__nilai[i][j] += A.__nilai[i][k] * B.__nilai[k][j]
         return hasil
 
 
