@@ -14,10 +14,6 @@ class Matriks:
         self.__kolom = kolom
         self.__nilai = [[0 for _ in range(10)] for _ in range(10)]
 
-        for i in range(baris):
-            for j in range(kolom):
-                self.__nilai[i][j] = 0
-
     def getBaris(self):
         return self.__baris
 
@@ -51,11 +47,11 @@ class Matriks:
             for j in range(self.__kolom):
                 self.__nilai[i][j] = A.__nilai[i][j] + B.__nilai[i][j]
 
-    def addMatriksReturn(self, A, B):
-        hasil = Matriks(A.__baris, A.__kolom)
-        for i in range(A.__baris):
-            for j in range(A.__kolom):
-                hasil.__nilai[i][j] = A.__nilai[i][j] + B.__nilai[i][j]
+    def addMatriksReturn(self, B):
+        hasil = Matriks(self.__baris, self.__kolom)
+        for i in range(self.__baris):
+            for j in range(self.__kolom):
+                hasil.__nilai[i][j] = self.__nilai[i][j] + B.__nilai[i][j]
         return hasil
 
     def kaliMatriksVoid(self, A, B):
@@ -67,13 +63,13 @@ class Matriks:
                 for k in range(A.__kolom):
                     self.__nilai[i][j] += A.__nilai[i][k] * B.__nilai[k][j]
 
-    def kaliMatriksReturn(self, A, B):
-        hasil = Matriks(A.__baris, B.__kolom)
-        for i in range(A.__baris):
+    def kaliMatriksReturn(self, B):
+        hasil = Matriks(self.__baris, B.__kolom)
+        for i in range(self.__baris):
             for j in range(B.__kolom):
                 hasil.__nilai[i][j] = 0
-                for k in range(A.__kolom):
-                    hasil.__nilai[i][j] += A.__nilai[i][k] * B.__nilai[k][j]
+                for k in range(self.__kolom):
+                    hasil.__nilai[i][j] += self.__nilai[i][k] * B.__nilai[k][j]
         return hasil
 
 
@@ -123,7 +119,7 @@ class Menu:
         self.cetakLuar(B, "Matriks B :")
 
         if A.getBaris() == B.getBaris() and A.getKolom() == B.getKolom():
-            hasilTambahReturn = A.addMatriksReturn(A, B)
+            hasilTambahReturn = A.addMatriksReturn(B)
             hasilTambahVoid = Matriks()
             hasilTambahVoid.addMatriksVoid(A, B)
 
@@ -138,7 +134,7 @@ class Menu:
             print("Ukuran matriks harus sama.")
 
         if A.getKolom() == B.getBaris():
-            hasilKaliReturn = A.kaliMatriksReturn(A, B)
+            hasilKaliReturn = A.kaliMatriksReturn(B)
             hasilKaliVoid = Matriks()
             hasilKaliVoid.kaliMatriksVoid(A, B)
 

@@ -92,8 +92,8 @@ class MyNilai:
                 terendah = self.__nilai[i]
         print("Nilai Terendah (Void) =", terendah)
 
-    def sortingAsc(self, A):
-        hasil = MyNilai(A.getUkuran(), A.__nilai)
+    def sortingAsc(self):
+        hasil = MyNilai(self.getUkuran(), self.__nilai)
 
         for i in range(hasil.__ukuran - 1):
             for j in range(hasil.__ukuran - 1 - i):
@@ -116,8 +116,8 @@ class MyNilai:
                     self.__nilai[j] = self.__nilai[j + 1]
                     self.__nilai[j + 1] = temp
 
-    def sortingDesc(self, A):
-        hasil = MyNilai(A.getUkuran(), A.__nilai)
+    def sortingDesc(self):
+        hasil = MyNilai(self.getUkuran(), self.__nilai)
         for i in range(hasil.__ukuran - 1):
             for j in range(hasil.__ukuran - 1 - i):
                 if hasil.__nilai[j] < hasil.__nilai[j + 1]:
@@ -214,7 +214,7 @@ class Menu:
         self.cetakLuar(A, "\nData Larik A:")
         A.cetakHasil()
 
-        hasilReturn = A.sortingAsc(A)
+        hasilReturn = A.sortingAsc()
         hasilVoid = MyNilai()
         hasilVoid.sortingAscVoid(A)
         print("\n=== SORTING RETURN (ASCENDING) ===")
@@ -222,7 +222,7 @@ class Menu:
         print("\n=== SORTING VOID (ASCENDING) ===")
         hasilVoid.cetakNilai()
 
-        hasilReturn = A.sortingDesc(A)
+        hasilReturn = A.sortingDesc()
         hasilVoid = MyNilai()
         hasilVoid.sortingDescVoid(A)
         print("\n=== SORTING RETURN (DESCENDING) ===")
