@@ -1,3 +1,4 @@
+
 /*
 Nama Program : Program Nilai (Array 1 Dimensi)
 Anggota      : - Amela Dzakiah Majid (140810250051)
@@ -6,16 +7,17 @@ Anggota      : - Amela Dzakiah Majid (140810250051)
 Tanggal Buat : 13 Oktober 2026
 Deskripsi    : Program OOP untuk mencari nilai rata-rata,
                nilai tertinggi, nilai terendah, dan sorting
-               dari kumpulan data bertipe array of float.
+               dari kumpulan data bertipe array of integer.
 */
 
 #include <iostream>
+#include <string>
 using namespace std;
 
 class MyLarik {
 private:
     int ukuran;
-    float* nilai;
+    int* nilai;
 
 public:
     MyLarik() {
@@ -25,16 +27,16 @@ public:
 
     MyLarik(int ukuran) {
         this->ukuran = ukuran;
-        nilai = new float[ukuran];
+        nilai = new int[ukuran];
 
         for (int i = 0; i < ukuran; i++) {
             nilai[i] = 0;
         }
     }
 
-    MyLarik(int ukuran, float data[]) {
+    MyLarik(int ukuran, int data[]) {
         this->ukuran = ukuran;
-        nilai = new float[ukuran];
+        nilai = new int[ukuran];
 
         for (int i = 0; i < ukuran; i++) {
             nilai[i] = data[i];
@@ -45,7 +47,7 @@ public:
         ukuran = A.ukuran;
 
         if (ukuran > 0) {
-            nilai = new float[ukuran];
+            nilai = new int[ukuran];
 
             for (int i = 0; i < ukuran; i++) {
                 nilai[i] = A.nilai[i];
@@ -61,7 +63,7 @@ public:
             ukuran = A.ukuran;
 
             if (ukuran > 0) {
-                nilai = new float[ukuran];
+                nilai = new int[ukuran];
 
                 for (int i = 0; i < ukuran; i++) {
                     nilai[i] = A.nilai[i];
@@ -82,7 +84,7 @@ public:
         return ukuran;
     }
 
-    float getNilai(int i) const {
+    int getNilai(int i) const {
         return nilai[i];
     }
 
@@ -92,7 +94,7 @@ public:
         this->ukuran = ukuran;
 
         if (ukuran > 0) {
-            nilai = new float[ukuran];
+            nilai = new int[ukuran];
 
             for (int i = 0; i < ukuran; i++) {
                 nilai[i] = 0;
@@ -102,7 +104,7 @@ public:
         }
     }
 
-    void setNilai(int i, float nilai) {
+    void setNilai(int i, int nilai) {
         this->nilai[i] = nilai;
     }
 
@@ -128,8 +130,8 @@ public:
         }
     }
 
-    float cariRata() const {
-        float jumlah = 0;
+    double cariRata() const {
+        double jumlah = 0;
 
         for (int i = 0; i < ukuran; i++) {
             jumlah += nilai[i];
@@ -145,7 +147,7 @@ public:
             nilai[i] = A.nilai[i];
         }
 
-        float jumlah = 0;
+        double jumlah = 0;
 
         for (int i = 0; i < ukuran; i++) {
             jumlah += nilai[i];
@@ -155,8 +157,8 @@ public:
              << jumlah / ukuran << endl;
     }
 
-    float nilaiMax() const {
-        float tertinggi = nilai[0];
+    int nilaiMax() const {
+        int tertinggi = nilai[0];
 
         for (int i = 1; i < ukuran; i++) {
             if (nilai[i] > tertinggi) {
@@ -174,7 +176,7 @@ public:
             nilai[i] = A.nilai[i];
         }
 
-        float tertinggi = nilai[0];
+        int tertinggi = nilai[0];
 
         for (int i = 1; i < ukuran; i++) {
             if (nilai[i] > tertinggi) {
@@ -186,8 +188,8 @@ public:
              << tertinggi << endl;
     }
 
-    float nilaiMin() const {
-        float terendah = nilai[0];
+    int nilaiMin() const {
+        int terendah = nilai[0];
 
         for (int i = 1; i < ukuran; i++) {
             if (nilai[i] < terendah) {
@@ -205,7 +207,7 @@ public:
             nilai[i] = A.nilai[i];
         }
 
-        float terendah = nilai[0];
+        int terendah = nilai[0];
 
         for (int i = 1; i < ukuran; i++) {
             if (nilai[i] < terendah) {
@@ -223,7 +225,7 @@ public:
         for (int i = 0; i < hasil.ukuran - 1; i++) {
             for (int j = 0; j < hasil.ukuran - 1 - i; j++) {
                 if (hasil.nilai[j] > hasil.nilai[j + 1]) {
-                    float temp = hasil.nilai[j];
+                    int temp = hasil.nilai[j];
                     hasil.nilai[j] = hasil.nilai[j + 1];
                     hasil.nilai[j + 1] = temp;
                 }
@@ -243,7 +245,7 @@ public:
         for (int i = 0; i < ukuran - 1; i++) {
             for (int j = 0; j < ukuran - 1 - i; j++) {
                 if (nilai[j] > nilai[j + 1]) {
-                    float temp = nilai[j];
+                    int temp = nilai[j];
                     nilai[j] = nilai[j + 1];
                     nilai[j + 1] = temp;
                 }
@@ -257,7 +259,7 @@ public:
         for (int i = 0; i < hasil.ukuran - 1; i++) {
             for (int j = 0; j < hasil.ukuran - 1 - i; j++) {
                 if (hasil.nilai[j] < hasil.nilai[j + 1]) {
-                    float temp = hasil.nilai[j];
+                    int temp = hasil.nilai[j];
                     hasil.nilai[j] = hasil.nilai[j + 1];
                     hasil.nilai[j + 1] = temp;
                 }
@@ -277,7 +279,7 @@ public:
         for (int i = 0; i < ukuran - 1; i++) {
             for (int j = 0; j < ukuran - 1 - i; j++) {
                 if (nilai[j] < nilai[j + 1]) {
-                    float temp = nilai[j];
+                    int temp = nilai[j];
                     nilai[j] = nilai[j + 1];
                     nilai[j + 1] = temp;
                 }
@@ -357,7 +359,7 @@ public:
 
     void inputLarikLuar(MyLarik& A) {
         for (int i = 0; i < A.getUkuran(); i++) {
-            float nilai;
+            int nilai;
 
             cout << "Masukkan nilai ke-" << i + 1 << " = ";
             cin >> nilai;
@@ -403,7 +405,7 @@ public:
     void constructor() {
         cout << "\n=== CONSTRUCTOR BERPAMETER ===" << endl;
 
-        float data[5] = {80, 60, 90, 70, 100};
+        int data[5] = {80, 60, 90, 70, 100};
         MyLarik A(5, data);
 
         cetakSemua(A);
