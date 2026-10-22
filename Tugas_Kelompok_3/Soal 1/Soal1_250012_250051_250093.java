@@ -60,7 +60,7 @@ class Nilai {
 
     public void isiNilai(Scanner input) {
         for (int i = 0; i < ukuran; i++) {
-            System.out.print("Masukkan nilai ke-" + (i + 1) + " = ");
+            System.out.print("Masukkan nilai ke-" + (i + 1) + " : ");
             nilai[i] = input.nextInt();
         }
     }
@@ -85,17 +85,17 @@ class Nilai {
         }
 
         double rata = (double) jumlah / ukuran;
-        System.out.println("Rata-rata (Void) = " + rata);
+        System.out.println("Rata-rata (Void) : " + rata);
     }
 
     public int nilaiMax() {
-        int tertinggi = nilai[0];
+        int max = nilai[0];
         for (int i = 0; i < ukuran; i++) {
-            if (nilai[i] > tertinggi) {
-                tertinggi = nilai[i];
+            if (nilai[i] > max) {
+                max = nilai[i];
             }
         }
-        return tertinggi;
+        return max;
     }
 
     public void nilaiMaxVoid(Nilai A) {
@@ -104,23 +104,23 @@ class Nilai {
             nilai[i] = A.nilai[i];
         }
 
-        int tertinggi = nilai[0];
+        int max = nilai[0];
         for (int i = 0; i < ukuran; i++) {
-            if (nilai[i] > tertinggi) {
-                tertinggi = nilai[i];
+            if (nilai[i] > max) {
+                max = nilai[i];
             }
         }
-        System.out.println("Nilai Tertinggi (Void) = " + tertinggi);
+        System.out.println("Nilai Tertinggi (Void) : " + max);
     }
 
     public int nilaiMin() {
-        int terendah = nilai[0];
+        int min = nilai[0];
         for (int i = 0; i < ukuran; i++) {
-            if (nilai[i] < terendah) {
-                terendah = nilai[i];
+            if (nilai[i] < min) {
+                min = nilai[i];
             }
         }
-        return terendah;
+        return min;
     }
 
     public void nilaiMinVoid(Nilai A) {
@@ -129,13 +129,13 @@ class Nilai {
             nilai[i] = A.nilai[i];
         }
 
-        int terendah = nilai[0];
+        int min = nilai[0];
         for (int i = 0; i < ukuran; i++) {
-            if (nilai[i] < terendah) {
-                terendah = nilai[i];
+            if (nilai[i] < min) {
+                min = nilai[i];
             }
         }
-        System.out.println("Nilai Terendah (Void) = " + terendah);
+        System.out.println("Nilai Terendah (Void) : " + min);
     }
 
     public Nilai sortingAsc(Nilai A) {
@@ -214,9 +214,9 @@ class Nilai {
 
     public void cetakHasil() {
         System.out.println("\n=== HASIL FUNGSI (RETURN) ===");
-        System.out.println("Rata-rata = " + cariRata());
-        System.out.println("Nilai Tertinggi = " + nilaiMax());
-        System.out.println("Nilai Terendah = " + nilaiMin());
+        System.out.println("Rata-rata : " + cariRata());
+        System.out.println("Nilai Tertinggi : " + nilaiMax());
+        System.out.println("Nilai Terendah : " + nilaiMin());
 
         System.out.println("\n=== HASIL VOID ===");
         Nilai hasilVoid = new Nilai();
