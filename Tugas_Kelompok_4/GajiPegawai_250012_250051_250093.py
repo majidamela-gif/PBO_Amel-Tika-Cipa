@@ -482,13 +482,11 @@ class Menu:
 
         print()
         print("=" * 60)
-        print(f" DAFTAR GAJI HARIAN PT INFORMATIKA - {judul.upper()} ")
+        print(" DAFTAR GAJI HARIAN PT INFORMATIKA ")
         print("=" * 60)
 
-        # Tabel utama tetap mengikuti urutan data saat dimasukkan.
-        self.cetakTabelData(kumpulan, "TABEL UTAMA (URUTAN INPUT)")
+        self.cetakTabelData(kumpulan, "TABEL UTAMA")
 
-        # Pengurutan berdasarkan gaji total, tanpa mengubah urutan tabel utama.
         indeks = list(range(kumpulan.getJumlah()))
 
         def totalGaji(index):
