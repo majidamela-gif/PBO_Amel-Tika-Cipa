@@ -482,11 +482,13 @@ class Menu:
 
         print()
         print("=" * 60)
-        print(" DAFTAR GAJI HARIAN PT INFORMATIKA ")
+        print(f" DAFTAR GAJI HARIAN PT INFORMATIKA - {judul.upper()} ")
         print("=" * 60)
 
-        self.cetakTabelData(kumpulan, "TABEL UTAMA")
+        # Tabel utama tetap mengikuti urutan data saat dimasukkan.
+        self.cetakTabelData(kumpulan, "TABEL UTAMA (URUTAN INPUT)")
 
+        # Pengurutan berdasarkan gaji total, tanpa mengubah urutan tabel utama.
         indeks = list(range(kumpulan.getJumlah()))
 
         def totalGaji(index):
@@ -611,6 +613,8 @@ class Menu:
         print()
         print("=== INPUT DALAM ===")
 
+        kumpulanDalam = ArrayPegawai()
+
         while True:
             banyak = int(
                 input("Masukkan jumlah pegawai (maksimal 10): ")
@@ -639,15 +643,17 @@ class Menu:
             print("=== WAKTU PULANG ===")
             pulang.inputWaktu()
 
-            self.__kumpulan.tambahPegawai(
+            kumpulanDalam.tambahPegawai(
                 pegawai, datang, pulang
             )
 
-        self.cetakTabel()
+        self.cetakLaporan(kumpulanDalam, "Input Dalam")
 
     def inputLuar(self):
         print()
         print("=== INPUT LUAR ===")
+
+        kumpulanLuar = ArrayPegawai()
 
         while True:
             banyak = int(
@@ -677,11 +683,11 @@ class Menu:
                 waktuPulang, "WAKTU PULANG"
             )
 
-            self.__kumpulan.tambahPegawai(
+            kumpulanLuar.tambahPegawai(
                 data, waktuDatang, waktuPulang
             )
 
-        self.cetakTabel()
+        self.cetakLaporan(kumpulanLuar, "Input Luar")
 
     def tampilkanMenu(self):
         print()
