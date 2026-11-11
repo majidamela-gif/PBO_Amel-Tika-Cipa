@@ -28,7 +28,6 @@ Deskripsi    : Buatlah program OOP Array of Object dengan menambahkan class pers
                Parkir kendaraan juga berbentuk array (buatkan tabel laporannya)
                Lakukan improvisasi. Tuliskan spek dan aturan terbaik yang lain berdasarkan spek dasar ini.
 */
-
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -110,30 +109,6 @@ public:
 
     int konvertDetik() {
         return jam * 3600 + menit * 60 + detik;
-    }
-
-    void selisihVoid(Waktu A, Waktu B) {
-        int totalA = A.konvertDetik();
-        int totalB = B.konvertDetik();
-        int selisih = (totalA >= totalB) ? totalA - totalB : totalB - totalA;
-
-        jam = selisih / 3600;
-        menit = (selisih % 3600) / 60;
-        detik = selisih % 60;
-    }
-
-    Waktu selisihReturn(Waktu A) {
-        int totalA = A.konvertDetik();
-        int totalThis = konvertDetik();
-        int hasil = (totalA >= totalThis) ? totalA - totalThis : totalThis - totalA;
-
-        return Waktu(hasil / 3600, (hasil % 3600) / 60, hasil % 60);
-    }
-
-    void cetakWaktu() {
-        cout << setfill('0') << setw(2) << jam << ":"
-             << setw(2) << menit << ":" << setw(2) << detik
-             << setfill(' ');
     }
 };
 
@@ -248,25 +223,12 @@ public:
         return Waktu(selisih / 3600, (selisih % 3600) / 60, selisih % 60);
     }
 
-    int hitungJamKerja(Waktu datang, Waktu pulang) {
-        Waktu lama = hitungLamaKerja(datang, pulang);
-        return lama.getJam();
-    }
-
     int hitungJamLembur(Waktu datang, Waktu pulang) {
         Waktu lama = hitungLamaKerja(datang, pulang);
         int totalDetik = lama.konvertDetik();
         if (totalDetik < 9 * 3600) return 0;
         int detikLembur = totalDetik - 8 * 3600;
         return detikLembur / 3600;
-    }
-
-    Waktu hitungLamaLembur(Waktu datang, Waktu pulang) {
-        Waktu lama = hitungLamaKerja(datang, pulang);
-        int totalDetik = lama.konvertDetik();
-        if (totalDetik < 9 * 3600) return Waktu(0, 0, 0);
-        int detikLembur = totalDetik - 8 * 3600;
-        return Waktu(detikLembur / 3600, (detikLembur % 3600) / 60, detikLembur % 60);
     }
 
     int hitungGajiLembur(Waktu datang, Waktu pulang) {
@@ -395,117 +357,345 @@ public:
     }
 };
 
+// ==================== CLASS PARKIR KENDARAAN ====================
+
+class Orang {
+private:
+    string nama;
+
+public:
+    Orang(string nama = "") { this->nama = nama; }
+
+    string getNama() { return nama; }
+    void setNama(string nama) { this->nama = nama; }
+};
 
 class Kendaraan {
 protected:
-    string nomorPolisi;
+    string nomorPolisi, NIP, status;
+    Orang pemilik;
+    Waktu waktuMasuk, waktuKeluar;
+
 public:
-    Kendaraan(string nomorPolisi = "") { this->nomorPolisi = nomorPolisi; }
+    Kendaraan(string nomor = "", string nama = "", string nip = "",
+              string status = "Umum", Waktu masuk = Waktu(),
+              Waktu keluar = Waktu()) {
+        nomorPolisi = nomor;
+        pemilik.setNama(nama);
+        NIP = nip;
+        this->status = status;
+        waktuMasuk = masuk;
+        waktuKeluar = keluar;
+    }
+
     virtual ~Kendaraan() {}
+
     string getNomorPolisi() { return nomorPolisi; }
+    string getStatus() { return status; }
+
+    int hitungLamaDetik() {
+        int awal = waktuMasuk.konvertDetik();
+        int akhir = waktuKeluar.konvertDetik();
+
+        if (akhir < awal) {
+            akhir += 24 * 3600;
+        }
+
+        return akhir - awal;
+    }
+
+    void setKendaraan(string nomor, string nama, string nip, string status, Waktu masuk, Waktu keluar) {
+        nomorPolisi = nomor;
+        pemilik.setNama(nama);
+        NIP = nip;
+        this->status = status;
+        waktuMasuk = masuk;
+        waktuKeluar = keluar;
+    }
+
+    void inputDataDasar() {
+        int pengguna;
+
+        cout << "Nomor polisi: ";
+        getline(cin, nomorPolisi);
+
+        do {
+            cout << "Jenis pengguna (1. Umum  2. Pegawai): ";
+            cin >> pengguna;
+
+            if (pengguna < 1 || pengguna > 2)
+                cout << "Pilihan tidak valid!" << endl;
+
+        } while (pengguna < 1 || pengguna > 2);
+
+        cin.ignore();
+
+        if (pengguna == 2) {
+            status = "Pegawai";
+
+            cout << "Nama pegawai: ";
+            string nama;
+            getline(cin, nama);
+            pemilik.setNama(nama);
+
+            cout << "NIP pegawai: ";
+            getline(cin, NIP);
+        } else {
+            status = "Umum";
+            pemilik.setNama("");
+            NIP = "";
+        }
+    }
+
     virtual string getJenis() = 0;
-    virtual int getTarifUmum() = 0;
+    virtual void cetakKarakteristik() = 0;
     virtual int hitungBiaya(int lamaDetik, bool pegawai) = 0;
+    virtual void inputKendaraan() = 0;
+
+    void cetakData(int no) {
+        Pegawai format;
+
+        string identitas = (status == "Pegawai")
+            ? pemilik.getNama() + "/" + NIP : "-";
+
+        int detik = hitungLamaDetik();
+
+        string lama = to_string(detik / 3600) + "j " +
+                    to_string((detik % 3600) / 60) + "m";
+
+        cout << left
+            << setw(4) << no
+            << setw(12) << nomorPolisi
+            << setw(10) << getJenis()
+            << setw(12) << status
+            << setw(18) << identitas
+            << setw(10) << format.formatWaktu(waktuMasuk)
+            << setw(10) << format.formatWaktu(waktuKeluar)
+            << setw(12) << lama
+            << setw(15) << ("Rp " + format.formatRibuan(
+                    hitungBiaya(detik, status == "Pegawai")))
+            ;
+
+        cetakKarakteristik();
+
+        cout << endl;
+    }
 };
 
 class Mobil : public Kendaraan {
+private:
+    int jumlahPintu;
+
 public:
-    Mobil(string nomorPolisi = "") : Kendaraan(nomorPolisi) {}
-    string getJenis() { return "Mobil"; }
-    int getTarifUmum() { return 3000; }
-    int hitungBiaya(int lamaDetik, bool pegawai) {
-        if (pegawai) return ((lamaDetik + 86400 - 1) / 86400) * 6000;
+    Mobil(string nomor = "", string nama = "", string nip = "",
+          string status = "Umum", Waktu masuk = Waktu(),
+          Waktu keluar = Waktu(), int pintu = 4)
+        : Kendaraan(nomor, nama, nip, status, masuk, keluar) {
+        jumlahPintu = pintu;
+    }
+
+    void setMobil(string nomor, string nama, string nip, string status, Waktu masuk, Waktu keluar, int pintu) {
+        setKendaraan(nomor, nama, nip, status, masuk, keluar);
+        jumlahPintu = pintu;
+    }
+
+    void inputKendaraan() override {
+        inputDataDasar();
+
+        do {
+            cout << "Jumlah pintu mobil: ";
+            cin >> jumlahPintu;
+
+            if (jumlahPintu < 2 || jumlahPintu > 6)
+                cout << "Jumlah pintu harus 2-6!" << endl;
+
+        } while (jumlahPintu < 2 || jumlahPintu > 6);
+
+        cin.ignore();
+
+        cout << "-- Waktu masuk --" << endl;
+        waktuMasuk.inputWaktu();
+
+        cout << "-- Waktu keluar --" << endl;
+        waktuKeluar.inputWaktu();
+    }
+
+    string getJenis() override { return "Mobil"; }
+
+    void cetakKarakteristik() override {
+        cout << "Jumlah pintu: " << jumlahPintu;
+    }
+
+    int hitungBiaya(int lamaDetik, bool pegawai) override {
+        if (pegawai)
+            return ((lamaDetik + 86400 - 1) / 86400) * 6000;
+
         return ((lamaDetik + 3600 - 1) / 3600) * 3000;
     }
 };
 
-class Motor : public Kendaraan {
+class Truk : public Kendaraan {
+private:
+    int jumlahRoda;
+
 public:
-    Motor(string nomorPolisi = "") : Kendaraan(nomorPolisi) {}
-    string getJenis() { return "Motor"; }
-    int getTarifUmum() { return 2000; }
-    int hitungBiaya(int lamaDetik, bool pegawai) {
-        if (pegawai) return ((lamaDetik + 86400 - 1) / 86400) * 3000;
-        return ((lamaDetik + 3600 - 1) / 3600) * 2000;
+    Truk(string nomor = "", string nama = "", string nip = "",
+         string status = "Umum", Waktu masuk = Waktu(),
+         Waktu keluar = Waktu(), int roda = 6)
+        : Kendaraan(nomor, nama, nip, status, masuk, keluar) {
+        jumlahRoda = roda;
+    }
+
+    void setTruk(string nomor, string nama, string nip, string status, Waktu masuk, Waktu keluar, int roda) {
+        setKendaraan(nomor, nama, nip, status, masuk, keluar);
+        jumlahRoda = roda;
+    }
+
+    void inputKendaraan() override {
+        inputDataDasar();
+
+        do {
+            cout << "Jumlah roda truk: ";
+            cin >> jumlahRoda;
+
+            if (jumlahRoda < 4 || jumlahRoda > 18)
+                cout << "Jumlah roda harus 4-18!" << endl;
+
+        } while (jumlahRoda < 4 || jumlahRoda > 18);
+
+        cin.ignore();
+
+        cout << "-- Waktu masuk --" << endl;
+        waktuMasuk.inputWaktu();
+
+        cout << "-- Waktu keluar --" << endl;
+        waktuKeluar.inputWaktu();
+    }
+
+    string getJenis() override { return "Truk"; }
+
+    void cetakKarakteristik() override {
+        cout << "Jumlah roda: " << jumlahRoda;
+    }
+
+    int hitungBiaya(int lamaDetik, bool pegawai) override {
+        return ((lamaDetik + 3600 - 1) / 3600) * 5000;
     }
 };
 
-class Truk : public Kendaraan {
+class Motor : public Kendaraan {
+private:
+    int jumlahTak;
+
 public:
-    Truk(string nomorPolisi = "") : Kendaraan(nomorPolisi) {}
-    string getJenis() { return "Truk"; }
-    int getTarifUmum() { return 5000; }
-    int hitungBiaya(int lamaDetik, bool pegawai) {
-        return ((lamaDetik + 3600 - 1) / 3600) * 5000;
+    Motor(string nomor = "", string nama = "", string nip = "",
+          string status = "Umum", Waktu masuk = Waktu(),
+          Waktu keluar = Waktu(), int tak = 4)
+        : Kendaraan(nomor, nama, nip, status, masuk, keluar) {
+        jumlahTak = tak;
+    }
+
+    void setMotor(string nomor, string nama, string nip, string status, Waktu masuk, Waktu keluar, int tak) {
+        setKendaraan(nomor, nama, nip, status, masuk, keluar);
+        jumlahTak = tak;
+    }
+
+    void inputKendaraan() override {
+        inputDataDasar();
+
+        do {
+            cout << "Jenis mesin motor (2 atau 4 tak): ";
+            cin >> jumlahTak;
+
+            if (jumlahTak != 2 && jumlahTak != 4)
+                cout << "Isi 2 atau 4!" << endl;
+
+        } while (jumlahTak != 2 && jumlahTak != 4);
+
+        cin.ignore();
+
+        cout << "-- Waktu masuk --" << endl;
+        waktuMasuk.inputWaktu();
+
+        cout << "-- Waktu keluar --" << endl;
+        waktuKeluar.inputWaktu();
+    }
+
+    string getJenis() override { return "Motor"; }
+
+    void cetakKarakteristik() override {
+        cout << "Jenis mesin: " << jumlahTak << "-tak";
+    }
+
+    int hitungBiaya(int lamaDetik, bool pegawai) override {
+        if (pegawai)
+            return ((lamaDetik + 86400 - 1) / 86400) * 3000;
+
+        return ((lamaDetik + 3600 - 1) / 3600) * 2000;
     }
 };
 
 class ArrayParkir {
 private:
     Kendaraan* kendaraan[10];
-    string nama[10], NIP[10], status[10];
-    Waktu masuk[10], keluar[10];
-    int lamaDetik[10], biaya[10], jumlah;
+    int jumlah;
+
 public:
     ArrayParkir() { jumlah = 0; }
+
     ~ArrayParkir() {
-        for (int i = 0; i < jumlah; i++) delete kendaraan[i];
+        for (int i = 0; i < jumlah; i++)
+            delete kendaraan[i];
     }
-    int getJumlah() { return jumlah; }
-    void tambahParkir(Kendaraan* kendaraanBaru, string nama, string NIP,
-                      string status, Waktu masuk, Waktu keluar) {
-        if (jumlah < 10) {
-            kendaraan[jumlah] = kendaraanBaru;
-            this->nama[jumlah] = nama;
-            this->NIP[jumlah] = NIP;
-            this->status[jumlah] = status;
-            this->masuk[jumlah] = masuk;
-            this->keluar[jumlah] = keluar;
-            int awal = masuk.konvertDetik();
-            int akhir = keluar.konvertDetik();
-            if (akhir <= awal) akhir += 86400;
-            lamaDetik[jumlah] = akhir - awal;
-            bool pegawai = (status == "Pegawai");
-            biaya[jumlah] = kendaraanBaru->hitungBiaya(lamaDetik[jumlah], pegawai);
-            jumlah++;
-        } else {
-            delete kendaraanBaru;
-            cout << "Data parkir sudah penuh! Maksimal 10 kendaraan." << endl;
+
+    void tambahParkir(Kendaraan* data) {
+        if (jumlah < 10)
+            kendaraan[jumlah++] = data;
+        else {
+            delete data;
+            cout << "Array parkir penuh!" << endl;
         }
     }
+
     void cetakLaporan() {
         if (jumlah == 0) {
-            cout << "Belum ada data parkir." << endl;
+            cout << "Tidak ada data parkir." << endl;
             return;
         }
+
         cout << endl << "================ LAPORAN PARKIR KENDARAAN ================" << endl;
-        cout << left << setw(4) << "No" << setw(12) << "No Polisi"
-             << setw(10) << "Jenis" << setw(14) << "Pengguna"
-             << setw(16) << "Nama/NIP" << setw(10) << "Masuk"
-             << setw(10) << "Keluar" << setw(12) << "Lama" << "Biaya" << endl;
-        cout << string(110, '-') << endl;
+        cout << endl;
+        cout << left
+            << setw(4) << "No"
+            << setw(12) << "No Polisi"
+            << setw(10) << "Jenis"
+            << setw(12) << "Pengguna"
+            << setw(18) << "Nama/NIP"
+            << setw(10) << "Masuk"
+            << setw(10) << "Keluar"
+            << setw(12) << "Lama"
+            << setw(15) << "Biaya"
+            << "Karakteristik" << endl;
+
+        cout << string(125, '-') << endl;
+
         int total = 0;
+
         for (int i = 0; i < jumlah; i++) {
-            int jam = lamaDetik[i] / 3600;
-            int menit = (lamaDetik[i] % 3600) / 60;
-            string lama = to_string(jam) + "j " + to_string(menit) + "m";
-            string identitas = (status[i] == "Pegawai") ? nama[i] + "/" + NIP[i] : "-";
-            Pegawai format;
-            cout << left << setw(4) << i + 1
-                 << setw(12) << kendaraan[i]->getNomorPolisi()
-                 << setw(10) << kendaraan[i]->getJenis()
-                 << setw(14) << status[i]
-                 << setw(16) << identitas
-                 << setw(10) << format.formatWaktu(masuk[i])
-                 << setw(10) << format.formatWaktu(keluar[i])
-                 << setw(12) << lama
-                 << "Rp " << format.formatRibuan(biaya[i]) << endl;
-            total += biaya[i];
+            kendaraan[i]->cetakData(i + 1);
+
+            total += kendaraan[i]->hitungBiaya(
+                kendaraan[i]->hitungLamaDetik(),
+                kendaraan[i]->getStatus() == "Pegawai");
         }
-        cout << string(110, '-') << endl;
+
+        cout << string(125, '-') << endl;
+
         Pegawai format;
+
         cout << "Jumlah kendaraan : " << jumlah << endl;
-        cout << "Total pendapatan  : Rp " << format.formatRibuan(total) << endl;
+        cout << "Total pendapatan  : Rp "
+             << format.formatRibuan(total) << endl;
     }
 };
 
@@ -515,6 +705,7 @@ private:
 
 public:
     Menu() { pilihan = 0; }
+
     int getPilihan() { return pilihan; }
 
     void inputPegawaiLuar(Pegawai &data) {
@@ -523,44 +714,52 @@ public:
 
         cout << "Masukkan NIP pegawai: ";
         getline(cin, NIP);
+
         cout << "Masukkan nama pegawai: ";
         getline(cin, nama);
+
         cout << "Masukkan alamat pegawai: ";
         getline(cin, alamat);
 
         do {
             cout << "Masukkan golongan: ";
             cin >> gol;
-            if (gol < 1 || gol > 4) cout << "Golongan harus 1-4!" << endl;
+            if (gol < 1 || gol > 4)
+                cout << "Golongan harus 1-4!" << endl;
         } while (gol < 1 || gol > 4);
 
         data.setNIP(NIP);
         data.setNama(nama);
         data.setAlamat(alamat);
         data.setGol(gol);
+
         cin.ignore();
     }
 
     void inputWaktuLuar(Waktu &waktu, string keterangan) {
         cout << endl << "=== " << keterangan << " ===" << endl;
+
         int jam, menit, detik;
 
         do {
             cout << "Masukkan Jam (0-23): ";
             cin >> jam;
-            if (jam < 0 || jam >= 24) cout << "Jam harus 0-23." << endl;
+            if (jam < 0 || jam >= 24)
+                cout << "Jam harus 0-23." << endl;
         } while (jam < 0 || jam >= 24);
 
         do {
             cout << "Masukkan Menit (0-59): ";
             cin >> menit;
-            if (menit < 0 || menit >= 60) cout << "Menit harus 0-59." << endl;
+            if (menit < 0 || menit >= 60)
+                cout << "Menit harus 0-59." << endl;
         } while (menit < 0 || menit >= 60);
 
         do {
             cout << "Masukkan Detik (0-59): ";
             cin >> detik;
-            if (detik < 0 || detik >= 60) cout << "Detik harus 0-59." << endl;
+            if (detik < 0 || detik >= 60)
+                cout << "Detik harus 0-59." << endl;
         } while (detik < 0 || detik >= 60);
 
         waktu.setWaktu(jam, menit, detik);
@@ -570,6 +769,7 @@ public:
     void cetakHeader(string judul = "Tabel Utama") {
         cout << endl << "=== " << judul << " ===" << endl;
         cout << string(180, '-') << endl;
+
         cout << left
              << setw(4) << "No"
              << setw(10) << "NIP"
@@ -584,17 +784,21 @@ public:
              << setw(12) << "Lembur"
              << setw(15) << "Total"
              << setw(12) << "Status" << endl;
+
         cout << string(180, '-') << endl;
     }
 
     void cetakTabelData(ArrayPegawai kumpulan, string judul) {
         cetakHeader(judul);
+
         for (int i = 0; i < kumpulan.getJumlah(); i++) {
             Pegawai data = kumpulan.getPegawai(i);
             Waktu datang = kumpulan.getWaktuDatang(i);
             Waktu pulang = kumpulan.getWaktuPulang(i);
+
             data.cetakPegawai(datang, pulang, i + 1);
         }
+
         cout << string(180, '-') << endl;
     }
 
@@ -605,12 +809,14 @@ public:
         int totalSemua = 0;
         int gajiTertinggi = kumpulan.hitungGajiPadaIndex(0);
         int gajiTerendah = kumpulan.hitungGajiPadaIndex(0);
+
         string pegawaiTertinggi = kumpulan.getPegawai(0).getNama();
         string pegawaiTerendah = kumpulan.getPegawai(0).getNama();
 
         for (int i = 0; i < jumlah; i++) {
             Pegawai data = kumpulan.getPegawai(i);
             int gaji = kumpulan.hitungGajiPadaIndex(i);
+
             totalSemua += gaji;
 
             if (gaji > gajiTertinggi) {
@@ -625,11 +831,20 @@ public:
         }
 
         Pegawai format;
-        int rataRata = static_cast<int>(static_cast<double>(totalSemua) / jumlah + 0.5);
-        cout << "Rata-rata Gaji  : Rp " << format.formatRibuan(rataRata) << endl;
-        cout << "Gaji Tertinggi  : Rp " << format.formatRibuan(gajiTertinggi)
+
+        int rataRata = static_cast<int>(
+            static_cast<double>(totalSemua) / jumlah + 0.5
+        );
+
+        cout << "Rata-rata Gaji  : Rp "
+             << format.formatRibuan(rataRata) << endl;
+
+        cout << "Gaji Tertinggi  : Rp "
+             << format.formatRibuan(gajiTertinggi)
              << " - " << pegawaiTertinggi << endl;
-        cout << "Gaji Terendah   : Rp " << format.formatRibuan(gajiTerendah)
+
+        cout << "Gaji Terendah   : Rp "
+             << format.formatRibuan(gajiTerendah)
              << " - " << pegawaiTerendah << endl;
     }
 
@@ -640,14 +855,21 @@ public:
         }
 
         cout << endl << string(60, '=') << endl;
-        cout << " DAFTAR GAJI HARIAN PT INFORMATIKA " << endl;
+        cout << " DAFTAR GAJI HARIAN PT INFORMATIKA - "
+             << judul << endl;
         cout << string(60, '=') << endl;
 
-        cetakTabelData(kumpulan, "TABEL UTAMA");
-        cetakTabelData(kumpulan.sortingAscending(),
-                       "TABEL ASCENDING (GAJI TOTAL TERKECIL KE TERBESAR)");
-        cetakTabelData(kumpulan.sortingDescending(),
-                       "TABEL DESCENDING (GAJI TOTAL TERBESAR KE TERKECIL)");
+        cetakTabelData(kumpulan, "TABEL UTAMA (URUTAN INPUT)");
+
+        cetakTabelData(
+            kumpulan.sortingAscending(),
+            "TABEL ASCENDING (GAJI TOTAL TERKECIL KE TERBESAR)"
+        );
+
+        cetakTabelData(
+            kumpulan.sortingDescending(),
+            "TABEL DESCENDING (GAJI TOTAL TERBESAR KE TERKECIL)"
+        );
 
         cout << endl << "=== STATISTIK GAJI ===" << endl;
         cetakRingkasan(kumpulan);
@@ -655,45 +877,56 @@ public:
 
     void constructor() {
         cout << endl << "=== CONSTRUCTOR BERPAMETER ===" << endl;
+
         ArrayPegawai kumpulanConstructor;
 
         kumpulanConstructor.tambahPegawai(
             Pegawai("Syifa", "012", 3, "Bandung"),
-            Waktu(8, 0, 0), Waktu(17, 15, 10));
+            Waktu(8, 0, 0), Waktu(17, 15, 10)
+        );
 
         kumpulanConstructor.tambahPegawai(
             Pegawai("Amela", "051", 2, "Sumedang"),
-            Waktu(8, 0, 0), Waktu(19, 30, 10));
+            Waktu(8, 0, 0), Waktu(19, 30, 10)
+        );
 
         kumpulanConstructor.tambahPegawai(
             Pegawai("Atika", "093", 4, "Bandung"),
-            Waktu(8, 0, 0), Waktu(14, 0, 10));
+            Waktu(8, 0, 0), Waktu(14, 0, 10)
+        );
 
         cetakLaporan(kumpulanConstructor, "CONSTRUCTOR BERPAMETER");
     }
 
     void setter() {
         cout << endl << "=== SETTER ===" << endl;
+
         ArrayPegawai kumpulanSetter;
 
         Pegawai p1;
         Waktu datang1, pulang1;
+
         p1.setNIP("001");
         p1.setNama("Doni");
         p1.setAlamat("Bandung");
         p1.setGol(2);
+
         datang1.setWaktu(8, 0, 0);
         pulang1.setWaktu(16, 30, 0);
 
         Pegawai p2;
         Waktu datang2, pulang2;
+
         p2.setPegawai("Tari", "002", 1, "Sumedang");
+
         datang2.setWaktu(22, 0, 0);
         pulang2.setWaktu(7, 0, 0);
 
         Pegawai p3;
         Waktu datang3, pulang3;
+
         p3.setPegawai("Iqbal", "003", 4, "Garut");
+
         datang3.setWaktu(7, 30, 0);
         pulang3.setWaktu(16, 0, 0);
 
@@ -706,24 +939,34 @@ public:
 
     void inputDalam() {
         cout << endl << "=== INPUT DALAM ===" << endl;
+
         ArrayPegawai kumpulanDalam;
 
         int banyak;
+
         do {
             cout << "Masukkan jumlah pegawai (maksimal 10): ";
             cin >> banyak;
-            if (banyak < 1 || banyak > 10) cout << "Jumlah pegawai harus 1-10!" << endl;
+
+            if (banyak < 1 || banyak > 10)
+                cout << "Jumlah pegawai harus 1-10!" << endl;
+
         } while (banyak < 1 || banyak > 10);
+
         cin.ignore();
 
         for (int i = 0; i < banyak; i++) {
-            cout << endl << "===== PEGAWAI KE-" << i + 1 << " =====" << endl;
+            cout << endl << "===== PEGAWAI KE-"
+                 << i + 1 << " =====" << endl;
+
             Pegawai pegawai;
             Waktu datang, pulang;
 
             pegawai.inputPegawai();
+
             cout << endl << "=== WAKTU DATANG ===" << endl;
             datang.inputWaktu();
+
             cout << endl << "=== WAKTU PULANG ===" << endl;
             pulang.inputWaktu();
 
@@ -735,18 +978,26 @@ public:
 
     void inputLuar() {
         cout << endl << "=== INPUT LUAR ===" << endl;
+
         ArrayPegawai kumpulanLuar;
 
         int banyak;
+
         do {
             cout << "Masukkan jumlah pegawai (maksimal 10): ";
             cin >> banyak;
-            if (banyak < 1 || banyak > 10) cout << "Jumlah pegawai harus 1-10!" << endl;
+
+            if (banyak < 1 || banyak > 10)
+                cout << "Jumlah pegawai harus 1-10!" << endl;
+
         } while (banyak < 1 || banyak > 10);
+
         cin.ignore();
 
         for (int i = 0; i < banyak; i++) {
-            cout << endl << "===== PEGAWAI KE-" << i + 1 << " =====" << endl;
+            cout << endl << "===== PEGAWAI KE-"
+                 << i + 1 << " =====" << endl;
+
             Pegawai data;
             Waktu waktuDatang, waktuPulang;
 
@@ -754,103 +1005,365 @@ public:
             inputWaktuLuar(waktuDatang, "WAKTU DATANG");
             inputWaktuLuar(waktuPulang, "WAKTU PULANG");
 
-            kumpulanLuar.tambahPegawai(data, waktuDatang, waktuPulang);
+            kumpulanLuar.tambahPegawai(
+                data, waktuDatang, waktuPulang
+            );
         }
 
         cetakLaporan(kumpulanLuar, "INPUT LUAR");
     }
 
+    void constructorParkir() {
+        cout << endl << "=== CONSTRUCTOR BERPAMETER PARKIR ===" << endl;
 
-    void programParkir() {
-        cout << endl << "===== PROGRAM PARKIR KENDARAAN =====" << endl;
+        ArrayParkir dataParkir;
+
+        dataParkir.tambahParkir(
+            new Mobil("D 1234 AB", "Amela", "051", "Pegawai",
+                    Waktu(8, 0, 0), Waktu(17, 0, 0), 4)
+        );
+
+        dataParkir.tambahParkir(
+            new Truk("D 5678 CD", "", "", "Umum",
+                    Waktu(9, 0, 0), Waktu(15, 30, 0), 10)
+        );
+
+        dataParkir.tambahParkir(
+            new Motor("D 9012 EF", "Atika", "093", "Pegawai",
+                    Waktu(7, 0, 0), Waktu(16, 0, 0), 4)
+        );
+
+        dataParkir.cetakLaporan();
+    }
+
+    void setterParkir() {
+        cout << endl << "=== SETTER PARKIR ===" << endl;
+
+        ArrayParkir dataParkir;
+
+        Mobil* mobil = new Mobil();
+        mobil->setMobil(
+            "D 1111 AA", "Doni", "001", "Pegawai",
+            Waktu(8, 0, 0), Waktu(17, 0, 0), 4
+        );
+
+        Truk* truk = new Truk();
+        truk->setTruk(
+            "D 2222 BB", "", "", "Umum",
+            Waktu(9, 0, 0), Waktu(16, 0, 0), 8
+        );
+
+        Motor* motor = new Motor();
+        motor->setMotor(
+            "D 3333 CC", "Tari", "002", "Pegawai",
+            Waktu(7, 0, 0), Waktu(15, 0, 0), 2
+        );
+
+        dataParkir.tambahParkir(mobil);
+        dataParkir.tambahParkir(truk);
+        dataParkir.tambahParkir(motor);
+
+        dataParkir.cetakLaporan();
+    }
+
+        void inputDalamParkir() {
+        cout << endl << "=== INPUT DALAM PARKIR ===" << endl;
+
         ArrayParkir dataParkir;
         int banyak;
+
         do {
             cout << "Masukkan jumlah kendaraan (1-10): ";
             cin >> banyak;
-            if (banyak < 1 || banyak > 10) cout << "Jumlah harus 1-10!" << endl;
+
+            if (banyak < 1 || banyak > 10)
+                cout << "Jumlah kendaraan harus 1-10!" << endl;
+
         } while (banyak < 1 || banyak > 10);
+
         cin.ignore();
 
         for (int i = 0; i < banyak; i++) {
-            cout << endl << "===== KENDARAAN KE-" << i + 1 << " =====" << endl;
+            cout << endl << "===== KENDARAAN KE-"
+                << i + 1 << " =====" << endl;
+
+            int jenis;
+
+            do {
+                cout << "Jenis kendaraan "
+                    << "(1. Mobil  2. Truk  3. Motor): ";
+                cin >> jenis;
+
+                if (jenis < 1 || jenis > 3)
+                    cout << "Pilihan tidak valid!" << endl;
+
+            } while (jenis < 1 || jenis > 3);
+
+            cin.ignore();
+
+            Kendaraan* baru;
+
+            if (jenis == 1)
+                baru = new Mobil();
+            else if (jenis == 2)
+                baru = new Truk();
+            else
+                baru = new Motor();
+
+            baru->inputKendaraan();
+
+            dataParkir.tambahParkir(baru);
+        }
+
+        dataParkir.cetakLaporan();
+    }
+
+    void inputLuarParkir() {
+        cout << endl << "=== INPUT LUAR PARKIR ===" << endl;
+
+        ArrayParkir dataParkir;
+        int banyak;
+
+        do {
+            cout << "Masukkan jumlah kendaraan (1-10): ";
+            cin >> banyak;
+
+            if (banyak < 1 || banyak > 10)
+                cout << "Jumlah kendaraan harus 1-10!" << endl;
+
+        } while (banyak < 1 || banyak > 10);
+
+        cin.ignore();
+
+        for (int i = 0; i < banyak; i++) {
+            cout << endl << "===== KENDARAAN KE-"
+                << i + 1 << " =====" << endl;
+
             string nomor, nama = "", nip = "";
-            int jenis, pengguna;
+            string status;
+            int pengguna, jenis, ciri;
+
             cout << "Nomor polisi: ";
             getline(cin, nomor);
-            do {
-                cout << "Jenis kendaraan (1. Mobil  2. Truk  3. Motor): ";
-                cin >> jenis;
-                if (jenis < 1 || jenis > 3) cout << "Pilihan tidak valid!" << endl;
-            } while (jenis < 1 || jenis > 3);
+
             do {
                 cout << "Jenis pengguna (1. Umum  2. Pegawai): ";
                 cin >> pengguna;
-                if (pengguna < 1 || pengguna > 2) cout << "Pilihan tidak valid!" << endl;
+
+                if (pengguna < 1 || pengguna > 2)
+                    cout << "Pilihan tidak valid!" << endl;
+
             } while (pengguna < 1 || pengguna > 2);
+
             cin.ignore();
-            string status = (pengguna == 2) ? "Pegawai" : "Umum";
-            if (pengguna == 2) {
+
+            status = (pengguna == 2) ? "Pegawai" : "Umum";
+
+            if (status == "Pegawai") {
                 cout << "Nama pegawai: ";
                 getline(cin, nama);
+
                 cout << "NIP pegawai: ";
                 getline(cin, nip);
             }
 
-            Waktu waktuMasuk, waktuKeluar;
-            cout << "-- Waktu masuk --" << endl;
-            waktuMasuk.inputWaktu();
-            cout << "-- Waktu keluar --" << endl;
-            waktuKeluar.inputWaktu();
+            do {
+                cout << "Jenis kendaraan (1. Mobil  2. Truk  3. Motor): ";
+                cin >> jenis;
 
-            Kendaraan* kendaraanBaru;
-            if (jenis == 1) kendaraanBaru = new Mobil(nomor);
-            else if (jenis == 2) kendaraanBaru = new Truk(nomor);
-            else kendaraanBaru = new Motor(nomor);
-            dataParkir.tambahParkir(kendaraanBaru, nama, nip, status, waktuMasuk, waktuKeluar);
+                if (jenis < 1 || jenis > 3)
+                    cout << "Pilihan tidak valid!" << endl;
+
+            } while (jenis < 1 || jenis > 3);
+
+            if (jenis == 1) {
+                do {
+                    cout << "Jumlah pintu mobil: ";
+                    cin >> ciri;
+
+                    if (ciri < 2 || ciri > 6)
+                        cout << "Jumlah pintu harus 2-6!" << endl;
+
+                } while (ciri < 2 || ciri > 6);
+
+            } else if (jenis == 2) {
+                do {
+                    cout << "Jumlah roda truk: ";
+                    cin >> ciri;
+
+                    if (ciri < 4 || ciri > 18)
+                        cout << "Jumlah roda harus 4-18!" << endl;
+
+                } while (ciri < 4 || ciri > 18);
+
+            } else {
+                do {
+                    cout << "Jenis mesin motor (2 atau 4 tak): ";
+                    cin >> ciri;
+
+                    if (ciri != 2 && ciri != 4)
+                        cout << "Isi 2 atau 4!" << endl;
+
+                } while (ciri != 2 && ciri != 4);
+            }
+
+            cin.ignore();
+
+            Waktu masuk, keluar;
+
+            inputWaktuLuar(masuk, "WAKTU MASUK");
+            inputWaktuLuar(keluar, "WAKTU KELUAR");
+
+            Kendaraan* baru;
+
+            if (jenis == 1) {
+                baru = new Mobil(
+                    nomor, nama, nip, status, masuk, keluar, ciri
+                );
+            } else if (jenis == 2) {
+                baru = new Truk(
+                    nomor, nama, nip, status, masuk, keluar, ciri
+                );
+            } else {
+                baru = new Motor(
+                    nomor, nama, nip, status, masuk, keluar, ciri
+                );
+            }
+
+            dataParkir.tambahParkir(baru);
         }
+
         dataParkir.cetakLaporan();
     }
 
-    void tampilkanMenu() {
-        cout << endl << "===== MENU GAJI PEGAWAI =====" << endl;
-        cout << "1. Constructor Berparameter" << endl;
-        cout << "2. Setter" << endl;
-        cout << "3. Input Dalam" << endl;
-        cout << "4. Input Luar" << endl;
-        cout << "5. Program Parkir Kendaraan" << endl;
-        cout << "6. Keluar" << endl;
-        cout << "=============================" << endl;
-        cout << "Pilih menu: ";
-        cin >> pilihan;
-        cin.ignore();
-    }
-
-    void prosesMenu() {
-        switch (pilihan) {
-            case 1: constructor(); break;
-            case 2: setter(); break;
-            case 3: inputDalam(); break;
-            case 4: inputLuar(); break;
-            case 5: programParkir(); break;
-            case 6: cout << endl << "Program selesai." << endl; break;
-            default: cout << endl << "Pilihan tidak tersedia!" << endl;
-        }
-    }
-};
-
-class Main {
-public:
-    static void main() {
-        Menu menu;
+    void menuUtama() {
         do {
-            menu.tampilkanMenu();
-            menu.prosesMenu();
-        } while (menu.getPilihan() != 6);
+            cout << endl;
+            cout << "========== MENU UTAMA ==========" << endl;
+            cout << "1. Program Pegawai" << endl;
+            cout << "2. Program Parkir" << endl;
+            cout << "3. Keluar" << endl;
+            cout << "================================" << endl;
+            cout << "Pilih menu: ";
+
+            cin >> pilihan;
+            cin.ignore();
+
+            switch (pilihan) {
+                case 1:
+                    menuPegawai();
+                    break;
+
+                case 2:
+                    menuParkir();
+                    break;
+
+                case 3:
+                    cout << endl << "Program selesai." << endl;
+                    break;
+
+                default:
+                    cout << "Pilihan tidak tersedia!" << endl;
+            }
+
+        } while (pilihan != 3);
+    }
+
+    void menuPegawai() {
+        int pilih;
+
+        do {
+            cout << endl;
+            cout << "========== PROGRAM PEGAWAI ==========" << endl;
+            cout << "1. Constructor Berparameter" << endl;
+            cout << "2. Setter" << endl;
+            cout << "3. Input Dalam" << endl;
+            cout << "4. Input Luar" << endl;
+            cout << "5. Kembali ke Menu Utama" << endl;
+            cout << "=====================================" << endl;
+            cout << "Pilih menu: ";
+
+            cin >> pilih;
+            cin.ignore();
+
+            switch (pilih) {
+                case 1:
+                    constructor();
+                    break;
+
+                case 2:
+                    setter();
+                    break;
+
+                case 3:
+                    inputDalam();
+                    break;
+
+                case 4:
+                    inputLuar();
+                    break;
+
+                case 5:
+                    cout << "Kembali ke Menu Utama..." << endl;
+                    break;
+
+                default:
+                    cout << "Pilihan tidak tersedia!" << endl;
+            }
+
+        } while (pilih != 5);
+    }
+
+    void menuParkir() {
+        int pilih;
+
+        do {
+            cout << endl;
+            cout << "========== PROGRAM PARKIR ==========" << endl;
+            cout << "1. Constructor Berparameter" << endl;
+            cout << "2. Setter" << endl;
+            cout << "3. Input Dalam" << endl;
+            cout << "4. Input Luar" << endl;
+            cout << "5. Kembali ke Menu Utama" << endl;
+            cout << "====================================" << endl;
+            cout << "Pilih menu: ";
+
+            cin >> pilih;
+            cin.ignore();
+
+            switch (pilih) {
+                case 1:
+                    constructorParkir();
+                    break;
+
+                case 2:
+                    setterParkir();
+                    break;
+
+                case 3:
+                    inputDalamParkir();
+                    break;
+
+                case 4:
+                    inputLuarParkir();
+                    break;
+
+                case 5:
+                    cout << "Kembali ke Menu Utama..." << endl;
+                    break;
+
+                default:
+                    cout << "Pilihan tidak tersedia!" << endl;
+            }
+
+        } while (pilih != 5);
     }
 };
+
 
 int main() {
-    Main::main();
+    Menu menu;
+    menu.menuUtama();
+
     return 0;
 }
