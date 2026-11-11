@@ -14,7 +14,7 @@ class Matriks {
     private int baris;
     private int kolom;
     private int[][] nilai;
-
+ 
     public Matriks() {
         baris = 0;
         kolom = 0;

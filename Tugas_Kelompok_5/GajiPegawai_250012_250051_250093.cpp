@@ -28,7 +28,6 @@ Deskripsi    : Buatlah program OOP Array of Object dengan menambahkan class pers
                Parkir kendaraan juga berbentuk array (buatkan tabel laporannya)
                Lakukan improvisasi. Tuliskan spek dan aturan terbaik yang lain berdasarkan spek dasar ini.
 */
-
 #include <iostream>
 #include <iomanip>
 #include <string>
