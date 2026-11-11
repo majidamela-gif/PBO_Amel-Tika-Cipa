@@ -131,7 +131,7 @@ public:
 };
 
 class Person {
-private:
+protected:
     string nama;
     string alamat;
 

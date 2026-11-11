@@ -126,32 +126,32 @@ class Waktu:
 
 class Person:
     def __init__(self, nama="", alamat=""):
-        self.__nama = nama
-        self.__alamat = alamat
+        self._nama = nama
+        self._alamat = alamat
 
     def getNama(self):
-        return self.__nama
+        return self._nama
 
     def getAlamat(self):
-        return self.__alamat
+        return self._alamat
 
     def setNama(self, nama):
-        self.__nama = nama
+        self._nama = nama
 
     def setAlamat(self, alamat):
-        self.__alamat = alamat
+        self._alamat = alamat
 
     def setPerson(self, nama, alamat):
-        self.__nama = nama
-        self.__alamat = alamat
+        self._nama = nama
+        self._alamat = alamat
 
     def inputPerson(self):
-        self.__nama = input("Masukkan nama: ")
-        self.__alamat = input("Masukkan alamat: ")
+        self._nama = input("Masukkan nama: ")
+        self._alamat = input("Masukkan alamat: ")
 
     def cetakPerson(self):
-        print("Nama   :", self.__nama)
-        print("Alamat :", self.__alamat)
+        print("Nama   :", self._nama)
+        print("Alamat :", self._alamat)
 
 
 class Pegawai(Person):
